@@ -59,6 +59,10 @@ jobs:
   core:
     name: ${{inputs.WRT_SOURCE}}
     runs-on: ubuntu-latest
+    options:
+    - ubuntu-20.04
+    - ubuntu-22.04
+    - ubuntu-latest
     steps:
       - name: Checkout Projects
         uses: actions/checkout@main
