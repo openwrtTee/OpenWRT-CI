@@ -26,8 +26,8 @@ fi
 if [ -d *"luci-theme-argon"* ]; then
 	cd ./luci-theme-argon/
 
-	sed -i '/font-weight:/ {/normal\|!important/! s/\(font-weight:\s*\)[^;]*;/\1normal;/}' $(find ./luci-theme-argon -type f -iname "*.css")
-	sed -i "s/#5e72e4/#69d7cd/; s/#483d8b/#69d7cd/; s/'0.2'/'0.5'/; s/'none'/'bing'/" ./luci-app-argon-config/root/etc/config/argon
+	sed -i '/font-weight:/ {/!important/! s/\(font-weight:\s*\)[^;]*;/\1normal;/}' $(find ./luci-theme-argon -type f -iname "*.css")
+	sed -i "s/primary '.*'/primary '#69d7cd'/; s/'0.3'/'0.5'/; s/'none'/'bing'/" ./luci-app-argon-config/root/etc/config/argon
 
 	cd $PKG_PATH && echo "theme-argon has been fixed!"
 fi
