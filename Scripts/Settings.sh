@@ -35,6 +35,11 @@ sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" $CFG_FILE
 #修改默认主机名
 sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" $CFG_FILE
 
+#引入私有扩展配置
+if [ -f "$GITHUB_WORKSPACE/Config/PRIVATE.txt" ]; then
+	echo "Applying private configurations from PRIVATE.txt..."
+	cat $GITHUB_WORKSPACE/Config/PRIVATE.txt >> ./.config
+fi
 
 #手动调整的插件
 if [ -n "$WRT_PACKAGE" ]; then
