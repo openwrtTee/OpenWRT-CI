@@ -1,42 +1,42 @@
 # SPDX-License-Identifier: MIT
-# Copyright (C) 2026 openwrtTee
+# Copyright (C) 2026 openwrtTee# 版权所有 © 2026 openwrtTee# 版权所有 © 2026 openwrtTee# 版权所有 © 2026 openwrtTee# 版权所有 © 2026 openwrtTee# 版权所有 © 2026 openwrtTee
 
 #CI项目
-name: QCA
+name: QCA名称: QCA
 
 #CI计划
 on:
   #手动编译
   workflow_dispatch:
     inputs:
-      PACKAGE:
-        description: '手动调整插件包，多个请用\n符号隔开。'
-        required: false
-        type: string
-      TEST:
-        description: '仅输出配置文件，不编译固件。'
-        default: 'false'
-        required: false
-        type: boolean
+      PACKAGE:包:
+        description: '手动调整插件包，多个请用\n符号隔开。'描述: '手动调整插件包，多个请用 符号隔开。'
+        required: false否
+        type: string类型: 字符串类型: 字符串
+      TEST:测试:TEST：测试:
+        description: '仅输出配置文件，不编译固件。'描述: '仅输出配置文件，不编译固件。'
+        default默认: 'false'默认值: 'false'
+        required: false必选: 否
+        type: boolean类型: 布尔值
 
 #CI权限
-permissions: write-all
+permissions: write-all权限: 读所有权限: 写入全部
 
 #CI任务
-jobs:
-  config:
-    name: ${{matrix.CONFIG}}
-    strategy:
-      fail-fast: false
-      #max-parallel: 3
-      matrix:
-        CONFIG: [IPQ60XX]
-        SOURCE: [openwrtTee/openwrt-nss-edma]
-        BRANCH: [main]
+jobs:作业:
+  config:配置:
+    name: ${{matrix.CONFIG}}名称: ${{名称: ${{matrix.CONFIG}}矩阵.配置}}名称: ${{matrix.CONFIG}}矩阵.配置}}矩阵.配置}}
+    strategy:策略:
+      fail-fast: false快速失败: 假
+      #max-parallel: 3#最大并行数：3
+      matrix:矩阵:
+        CONFIG: [IPQ60XX]配置: [IPQ60XX]
+        SOURCE来源来源来源来源: [openwrtTee/openwrt-nss-edma]来源: [openwrtTee/openwrt-nss-edma]
+        BRANCH: [openwrt-nss-edma]分支: [openwrt-nss-edma]
 
     #调用公用编译核心
-    uses: ./.github/workflows/WRT-CORE.yml
-    with:
+    uses: ./.github/workflows/WRT-CORE.yml使用: ./.github/workflows/WRT-CORE.yml
+    with:与:
       #编译配置
       WRT_CONFIG: ${{matrix.CONFIG}}
       #默认主题
