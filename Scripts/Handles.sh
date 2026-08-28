@@ -1,15 +1,11 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
-# Copyright (C) 2026 VIKINGYFY
+# Copyright (C) 2026
 
-if [ -n "${GITHUB_WORKSPACE:-}" ] && [ -d "$GITHUB_WORKSPACE/wrt/package" ]; then
-	PKG_PATH="$GITHUB_WORKSPACE/wrt/package"
-else
-	PKG_PATH="$(pwd)"
-fi
+PKG_PATH="$GITHUB_WORKSPACE/wrt/package"
 
 #预置HomeProxy数据
-HP_DIR="$(find "$PKG_PATH" -maxdepth 1 -type d -name '*homeproxy*' -print -quit)"
+HP_DIR="$(find "$PKG_PATH" -maxdepth 3 -type d -iname '*homeproxy*' -print -quit 2>/dev/null)"
 if [ -n "$HP_DIR" ]; then
 	echo " "
 
@@ -200,65 +196,59 @@ if [ -n "$HP_DIR" ]; then
 fi
 
 #修改argon主题字体和颜色
-if [ -d *"luci-theme-argon"* ]; then
+if [ -d "$PKG_PATH/luci-theme-argon" ]; then
 	echo " "
-
-	cd ./luci-theme-argon/
-
-	sed -i "s/primary '.*'/primary '#69d7cd'/; s/'0.3'/'0.5'/; s/'none'/'bing'/; s/'600'/'normal'/" ./luci-app-argon-config/root/etc/config/argon
-
-	cd $PKG_PATH && echo "theme-argon has been fixed!"
+	if sed -i "s/primary '.*'/primary '#31a1a1'/; s/'0.2'/'0.5'/; s/'none'/'bing'/; s/'600'/'normal'/" \
+		"$PKG_PATH/luci-theme-argon/luci-app-argon-config/root/etc/config/argon"; then
+		echo "theme-argon has been fixed!"
+	else
+		echo "theme-argon fix failed; continuing!"
+	fi
 fi
 
 #修改aurora菜单式样
-if [ -d *"luci-app-aurora-config"* ]; then
+if [ -d "$PKG_PATH/luci-app-aurora-config" ]; then
 	echo " "
+	if find "$PKG_PATH/luci-app-aurora-config/root/usr/share/aurora/" -type f -name '*.template' -exec \
+		sed -i "s/nav_type '.*'/nav_type 'dropdown'/g; s/struct_radius_base '.*'/struct_radius_base '0.125rem'/g" {} +; then
+		echo "theme-aurora has been fixed!"
+	else
+		echo "theme-aurora fix failed; continuing!"
+	fi
+fi
 
-	cd ./luci-app-aurora-config/
-
-	sed -i "s/nav_submenu_type '.*'/nav_submenu_type 'boxed-dropdown'/g" $(find ./root/usr/share/aurora/ -type f -name "*.template")
-
-	cd $PKG_PATH && echo "theme-aurora has been fixed!"
+#修改mini-diskmanager菜单位置
+if [ -d "$PKG_PATH/luci-app-mini-diskmanager" ]; then
+	echo " "
+	if sed -i "s/services/system/g" \
+		"$PKG_PATH/luci-app-mini-diskmanager/luci-app-mini-diskmanager/root/usr/share/luci/menu.d/luci-app-mini-diskmanager.json"; then
+		echo "mini-diskmanager has been fixed!"
+	else
+		echo "mini-diskmanager fix failed; continuing!"
+	fi
 fi
 
 #修复TailScale配置文件冲突
-TS_FILE=$(find ../feeds/packages/ -maxdepth 3 -type f -wholename "*/tailscale/Makefile")
+FEEDS_PACKAGES="$PKG_PATH/../feeds/packages"
+TS_FILE="$(find "$FEEDS_PACKAGES" -maxdepth 3 -type f -wholename '*/tailscale/Makefile' -print -quit 2>/dev/null)"
 if [ -f "$TS_FILE" ]; then
 	echo " "
 
-	sed -i '/\/files/d' $TS_FILE
-
-	cd $PKG_PATH && echo "tailscale has been fixed!"
+	if sed -i '/\/files/d' "$TS_FILE"; then
+		echo "tailscale has been fixed!"
+	else
+		echo "tailscale fix failed; continuing!"
+	fi
 fi
 
 #修复Rust编译失败
-RUST_FILE=$(find ../feeds/packages/ -maxdepth 3 -type f -wholename "*/rust/Makefile")
+RUST_FILE="$(find "$FEEDS_PACKAGES" -maxdepth 3 -type f -wholename '*/rust/Makefile' -print -quit 2>/dev/null)"
 if [ -f "$RUST_FILE" ]; then
 	echo " "
 
-	sed -i 's/ci-llvm=true/ci-llvm=false/g' $RUST_FILE
-
-	cd $PKG_PATH && echo "rust has been fixed!"
-fi
-
-#修复DiskMan编译失败
-DM_FILE="./luci-app-diskman/applications/luci-app-diskman/Makefile"
-if [ -f "$DM_FILE" ]; then
-	echo " "
-
-	sed -i '/ntfs-3g-utils /d' $DM_FILE
-
-	cd $PKG_PATH && echo "diskman has been fixed!"
-fi
-
-#修复luci-app-netspeedtest相关问题
-if [ -d *"luci-app-netspeedtest"* ]; then
-	echo " "
-
-	cd ./luci-app-netspeedtest/
-
-	sed -i '$a\exit 0' ./netspeedtest/files/99_netspeedtest.defaults
-	sed -i 's/ca-certificates/ca-bundle/g' ./speedtest-cli/Makefile
-
-	cd $PKG_PATH && echo "netspeedtest has been fixed!"
+	if sed -i 's/ci-llvm=true/ci-llvm=false/g' "$RUST_FILE"; then
+		echo "rust has been fixed!"
+	else
+		echo "rust fix failed; continuing!"
+	fi
 fi
