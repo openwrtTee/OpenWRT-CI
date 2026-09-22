@@ -8,8 +8,8 @@ PACKAGE_PATH="./package"
 #修改argon主题字体和颜色
 if [ -d "$PACKAGE_PATH/luci-theme-argon" ]; then
 	echo " "
-	if sed -i "s/primary '.*'/primary '#31a1a1'/g; s/'0.2'/'0.5'/g; s/'none'/'bing'/g; s/'600'/'normal'/g" \
-		"$PACKAGE_PATH/luci-theme-argon/luci-app-argon-config/root/etc/config/argon"; then
+	if sed -i "s/primary '.*'/primary '#69d7cd'/g; s/'0.3/g" \
+		"$PACKAGE_PATH/luci-theme-argon/root/etc/config/argon"; then
 		echo "theme-argon has been fixed!"
 	else
 		echo "theme-argon fix failed; continuing!"
@@ -46,17 +46,6 @@ if [ -d "$PACKAGE_PATH/luci-app-natmapt" ]; then
 		echo "natmapt has been fixed!"
 	else
 		echo "natmapt fix failed; continuing!"
-	fi
-fi
-
-#修复QModem依赖循环
-if [ -d "$PACKAGE_PATH/QModem" ]; then
-	echo " "
-	if sed -i 's/@!PACKAGE_luci-app-qmodem //g; s/+luci-app-qmodem-next/luci-app-qmodem-next/g' \
-		"$PACKAGE_PATH/QModem/luci/luci-app-qmodem-next/Makefile"; then
-		echo "QModem has been fixed!"
-	else
-		echo "QModem fix failed; continuing!"
 	fi
 fi
 
