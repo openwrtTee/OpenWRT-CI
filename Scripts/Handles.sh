@@ -1,6 +1,6 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
-# Copyright (C) 2026
+# Copyright (C) 2026 VIKINGYFY
 
 FEEDS_PATH="./feeds"
 PACKAGE_PATH="./package"
@@ -24,8 +24,8 @@ FIX() {
 
 #修改argon主题字体和颜色
 FIX "theme-argon" "$PACKAGE_PATH/luci-theme-argon" sed -i \
-	"s/primary '.*'/primary '#69d7cd'/g; s/'0.3'/g" \
-	"$PACKAGE_PATH/luci-theme-argon/luci-app-argon/root/etc/config/argon"
+	"s/primary '.*'/primary '#31a1a1'/g; s/'0.2'/'0.5'/g; s/'none'/'bing'/g; s/'600'/'normal'/g" \
+	"$PACKAGE_PATH/luci-theme-argon/luci-app-argon-config/root/etc/config/argon"
 
 #修改aurora菜单式样
 FIX "theme-aurora" "$PACKAGE_PATH/luci-app-aurora-config" find \
@@ -39,7 +39,3 @@ FIX "mini-diskmanager" "$PACKAGE_PATH/luci-app-mini-diskmanager" sed -i "s/servi
 #修改natmapt菜单位置
 FIX "natmapt" "$PACKAGE_PATH/luci-app-natmapt" sed -i "s/network/services/g" \
 	"$PACKAGE_PATH/luci-app-natmapt/root/usr/share/luci/menu.d/luci-app-natmap.json"
-
-#修复Rust编译失败
-FIX "rust" "$FEEDS_PATH/packages/lang/rust" sed -i 's/ci-llvm=true/ci-llvm=false/g' \
-	"$FEEDS_PATH/packages/lang/rust/Makefile"
